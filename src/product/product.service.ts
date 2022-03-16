@@ -1,19 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { CreateProductRequestDto, FindOneRequestDto } from './product.dto';
+import { CreateProductResponse, DecreaseStockResponse, FindOneResponse } from './product.pb';
 
 @Injectable()
 export class ProductService {
   @InjectRepository(Product)
   private readonly repository: Repository<Product>;
 
-  public findOne({ id }: FindOneRequestDto): Promise<Product> {
-    return this.repository.findOne(id);
+  public async findOne({ id }: FindOneRequestDto): Promise<FindOneResponse> {
+    const product: Product = await this.repository.findOne(id);
+
+    if (!product) {
+      return { data: null, error: ['Product not found'], status: HttpStatus.NOT_FOUND };
+    }
+    return { data: product, error: null, status: HttpStatus.OK };
   }
 
-  public create(payload: CreateProductRequestDto): Promise<Product> {
+  public async createProduct(payload: CreateProductRequestDto): Promise<CreateProductResponse> {
     const product: Product = new Product();
 
     product.name = payload.name;
@@ -21,6 +27,22 @@ export class ProductService {
     product.stock = payload.stock;
     product.price = payload.price;
 
-    return this.repository.save(product);
+    await this.repository.save(product);
+
+    return { id: product.id, error: null, status: HttpStatus.OK };
+  }
+
+  public async decreaseStock(payload: any): Promise<DecreaseStockResponse> {
+    const product: Product = await this.repository.findOne(payload.id);
+
+    if (!product) {
+      return { error: ['Product not found'], status: HttpStatus.NOT_FOUND };
+    } else if (product.stock <= 0) {
+      return { error: ['Stock too low'], status: HttpStatus.CONFLICT };
+    }
+
+    this.repository.update(product.id, { stock: product.stock - 1 });
+
+    return { error: null, status: HttpStatus.OK };
   }
 }
