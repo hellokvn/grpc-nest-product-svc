@@ -1,12 +1,12 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { CreateRequest, FindOneRequest } from './product.pb';
+import { CreateProductRequest, FindOneRequest } from './product.pb';
 
 export class FindOneRequestDto implements FindOneRequest {
   @IsNumber({ allowInfinity: false, allowNaN: false })
   public readonly id: number;
 }
 
-export class CreateRequestDto implements CreateRequest {
+export class CreateProductRequestDto implements CreateProductRequest {
   @IsString()
   @IsNotEmpty()
   public readonly name: string;

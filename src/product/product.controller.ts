@@ -1,8 +1,8 @@
 import { Controller, HttpStatus, Inject } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { CreateRequestDto, FindOneRequestDto } from './product.dto';
+import { CreateProductRequestDto, FindOneRequestDto } from './product.dto';
 import { Product } from './product.entity';
-import { CreateResponse, FindOneResponse, PRODUCT_SERVICE_NAME } from './product.pb';
+import { CreateProductResponse, FindOneResponse, PRODUCT_SERVICE_NAME } from './product.pb';
 import { ProductService } from './product.service';
 
 @Controller('product')
@@ -11,7 +11,7 @@ export class ProductController {
   private readonly service: ProductService;
 
   @GrpcMethod(PRODUCT_SERVICE_NAME, 'Create')
-  private async create(payload: CreateRequestDto): Promise<CreateResponse> {
+  private async create(payload: CreateProductRequestDto): Promise<CreateProductResponse> {
     const product: Product = await this.service.create(payload);
 
     if (!product) {

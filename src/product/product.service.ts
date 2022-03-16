@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
-import { CreateRequestDto, FindOneRequestDto } from './product.dto';
+import { CreateProductRequestDto, FindOneRequestDto } from './product.dto';
 
 @Injectable()
 export class ProductService {
@@ -13,7 +13,7 @@ export class ProductService {
     return this.repository.findOne(id);
   }
 
-  public create(payload: CreateRequestDto): Promise<Product> {
+  public create(payload: CreateProductRequestDto): Promise<Product> {
     const product: Product = new Product();
 
     product.name = payload.name;
