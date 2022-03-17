@@ -4,13 +4,14 @@ import { CreateProductRequestDto, FindOneRequestDto, DecreaseStockRequestDto } f
 import { CreateProductResponse, FindOneResponse, PRODUCT_SERVICE_NAME, DecreaseStockResponse } from './product.pb';
 import { ProductService } from './product.service';
 
-@Controller('product')
+@Controller()
 export class ProductController {
   @Inject(ProductService)
   private readonly service: ProductService;
 
   @GrpcMethod(PRODUCT_SERVICE_NAME, 'CreateProduct')
   private createProduct(payload: CreateProductRequestDto): Promise<CreateProductResponse> {
+    console.log('ok');
     return this.service.createProduct(payload);
   }
 
