@@ -11,7 +11,6 @@ export class ProductController {
 
   @GrpcMethod(PRODUCT_SERVICE_NAME, 'CreateProduct')
   private createProduct(payload: CreateProductRequestDto): Promise<CreateProductResponse> {
-    console.log('ok');
     return this.service.createProduct(payload);
   }
 
