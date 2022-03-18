@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
-import { CreateProductRequestDto, FindOneRequestDto } from './product.dto';
+import { CreateProductRequestDto, DecreaseStockRequestDto, FindOneRequestDto } from './product.dto';
 import { CreateProductResponse, DecreaseStockResponse, FindOneResponse } from './product.pb';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class ProductService {
   private readonly repository: Repository<Product>;
 
   public async findOne({ id }: FindOneRequestDto): Promise<FindOneResponse> {
-    const product: Product = await this.repository.findOne(id);
+    const product: Product = await this.repository.findOne({ where: { id } });
 
     if (!product) {
       return { data: null, error: ['Product not found'], status: HttpStatus.NOT_FOUND };
@@ -32,8 +32,8 @@ export class ProductService {
     return { id: product.id, error: null, status: HttpStatus.OK };
   }
 
-  public async decreaseStock(payload: any): Promise<DecreaseStockResponse> {
-    const product: Product = await this.repository.findOne(payload.id);
+  public async decreaseStock({ id }: DecreaseStockRequestDto): Promise<DecreaseStockResponse> {
+    const product: Product = await this.repository.findOne({ where: { id } });
 
     if (!product) {
       return { error: ['Product not found'], status: HttpStatus.NOT_FOUND };
