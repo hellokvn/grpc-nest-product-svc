@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { StockDecreaseLog } from './stock-decrease-log.entity';
 
 @Entity()
 export class Product extends BaseEntity {
@@ -16,4 +17,11 @@ export class Product extends BaseEntity {
 
   @Column({ type: 'decimal', precision: 12, scale: 2 })
   public price!: number;
+
+  /*
+   * One-To-Many Relationships
+   */
+
+  @OneToMany(() => StockDecreaseLog, (stockDecreaseLog) => stockDecreaseLog.product)
+  public stockDecreaseLogs: StockDecreaseLog[];
 }
